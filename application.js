@@ -1,7 +1,7 @@
 var http = require('http');
 var app = require('../landreg-hyperledger/application/app');
 
-var id = 5;
+var id = 40;
 var server = http.createServer(
     function (request, response) {
         var origin = (request.headers.origin || "*");
@@ -66,12 +66,18 @@ var server = http.createServer(
                 else {// obj.name === "query"
                     obj.surveyId = obj.id;
                     param.push(obj.surveyId.toString());
-
+                    // param.push(obj.cowner);
+                    // param.push(obj.area);
+                    
                 }
+                var start = Date.now();
                 app.main(obj.name, ...param).then((res) => {
                     var responseBody = res;
+                    var milli = Date.now() - start;
                     console.log('Issue program complete.');
-
+                    var response1 = JSON.parse(responseBody);
+                    response1.time = milli;
+                    responseBody = JSON.stringify(response1);
                     console.log(responseBody);
 
                     response.writeHead(
